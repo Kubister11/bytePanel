@@ -1,8 +1,9 @@
 <script setup>
+import Console from "@/components/Console.vue";
 </script>
 
 <template>
-  <main>
-<!--    <h1 class="text-cyan-400">TEST HOME</h1>-->
+  <main class="flex w-full h-full">
+    <Console />
   </main>
 </template>
