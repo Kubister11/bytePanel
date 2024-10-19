@@ -1,0 +1,32 @@
+@import url('https://fonts.cdnfonts.com/css/gilroy-bold');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+  /*background: url("../../background.png");*/
+  background-color: #111827;
+  overflow-x: hidden;
+}
+
+* {
+  font-family: "Gilroy Light", "Gilroy ExtraBold", serif;
+}
+
+.bold-font {
+  font-family: "Gilroy ExtraBold", "Gilroy Light", serif;
+}
+
+
+.bg-sphere {
+  position: absolute;
+  width: 670px;
+  height: 670px;
+  /*background-color: #354d0b;*/
+  background-color: #0b2a4d;
+  border-radius: 50%;
+  filter: blur(100px);
+  z-index: -1;
+}
