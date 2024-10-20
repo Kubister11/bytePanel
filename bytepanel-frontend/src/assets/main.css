@@ -22,6 +22,18 @@ body {
   font-family: "Gilroy ExtraBold", "Gilroy Light", serif;
 }
 
+.Vue-Toastification__toast--default  {
+  background-color: rgb(28, 108, 197) !important;
+}
+
+.Vue-Toastification__toast--error  {
+  background-color: rgb(197, 28, 28) !important;
+}
+.Vue-Toastification__toast--warning  {
+  background-color: rgb(197, 124, 28) !important;
+}
+
+
 
 .bg-sphere {
   position: absolute;
