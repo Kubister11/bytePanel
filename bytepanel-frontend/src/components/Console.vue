@@ -16,42 +16,19 @@
         <div class="w-4 h-4 bg-[#33FF00] rounded-full shadow-[0_0_10px_1px_#33FF00]"></div>
       </div>
     </div>
-    <div class="w-full h-full">
-<!--      <p class="text-white font-[Consolas]">-->
-<!--        Starting org.bukkit.craftbukkit.Main-->
-<!--        System Info: Java 22 (OpenJDK 64-Bit Server VM 22.0.2+9) Host: Linux 6.1.0-26-amd64 (amd64)-->
-<!--        Loading libraries, please wait...-->
-<!--        [21:28:29 INFO]: Environment: Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, name=PROD]-->
-<!--        [21:28:29 INFO]: Loaded 1174 recipes-->
-<!--        [21:28:29 INFO]: Loaded 0 advancements-->
-<!--        [21:28:30 INFO]: Starting minecraft server version 1.20.4-->
-<!--        [21:28:30 INFO]: Loading properties-->
-<!--        [21:28:30 INFO]: This server is running SSSpigot version SSSpigot2-1.20.4-20240220-4b77e05 (MC: 1.20.4) (Implementing API version 1.20.4-R0.1-SNAPSHOT) (Git: 4b77e05 on 1.20.4)-->
-<!--        [21:28:30 INFO]: Server Ping Player Sample Count: 12-->
-<!--        [21:28:30 INFO]: Using 6 threads for Netty based IO-->
-<!--        [21:28:30 INFO]: [ChunkTaskScheduler] Chunk system is using 1 I/O threads, 8 worker threads, and gen parallelism of 8 threads-->
-<!--        [21:28:30 WARN]: [Pufferfish] Will not enable SIMD! These optimizations are only safely supported on Java 17, Java 18, and Java 19.-->
-<!--        [21:28:30 INFO]: Default game type: SURVIVAL-->
-<!--        [21:28:30 INFO]: Generating keypair-->
-<!--        [21:28:30 INFO]: Starting Minecraft server on 0.0.0.0:3001-->
-<!--        [21:28:30 INFO]: Using epoll channel type-->
-<!--        [21:28:30 INFO]: Paper: Using libdeflate (Linux x86_64) compression from Velocity.-->
-<!--        [21:28:30 INFO]: Paper: Using OpenSSL 3.0.x (Linux x86_64) cipher from Velocity.-->
-<!--        [21:28:30 INFO]: [SpigotLibraryLoader] [CORE - System] Loading 9 libraries... please wait-->
-<!--        [21:28:31 INFO]: [SpigotLibraryLoader] [CORE - System] Loaded library /home/container/libraries/org/redisson/redisson/3.36.0/redisson-3.36.0.jar-->
-<!--        [21:28:31 INFO]: [SpigotLibraryLoader] [CORE - System] Loaded library /home/container/libraries/io/netty/netty-common/4.1.112.Final/netty-common-4.1.112.Final.jar-->
-<!--        [21:28:31 INFO]: [SpigotLibraryLoader] [CORE - System] Loaded library /home/container/libraries/io/netty/netty-codec/4.1.112.Final/netty-codec-4.1.112.Final.jar-->
-<!--        [21:28:31 INFO]: [SpigotLibraryLoader] [CORE - System] Loaded library /home/container/libraries/io/netty/netty-buffer/4.1.112.Final/netty-buffer-4.1.112.Final.jar-->
-<!--        [21:28:31 INFO]: [SpigotLibraryLoader] [CORE - System] Loaded library /home/container/libraries/io/netty/netty-transport/4.1.112.Final/netty-transport-4.1.112.Final.jar-->
-<!--        [21:28:31 INFO]: [SpigotLibraryLoader] [CORE - System] Loaded library /home/container/libraries/io/netty/netty-resolver/4.1.112.Final/netty-resolver-4.1.112.Final.jar-->
-<!--        [21:28:31 INFO]: [SpigotLibraryLoader] [CORE - System] Loaded library /home/container/libraries/io/netty/netty-resolver-dns/4.1.112.Final/netty-resolver-dns-4.1.112.Final.jar-->
-<!--        [21:28:31 INFO]: [SpigotLibraryLoader] [CORE - System] Loaded library /home/container/libraries/io/netty/netty-codec-dns/4.1.112.Final/netty-codec-dns-4.1.112.Final.jar-->
-<!--      </p>-->
+
+
+    <div class="w-full h-full fle relative">
+      <div ref="console" class="w-full h-full absolute flex flex-col overflow-y-auto p-4">
+        <p v-for="log in logs" class="text-white text-[13px] font-[Consolas]">{{ log }}</p>
+      </div>
     </div>
+
+
     <div class="w-full h-[80px] bg-black bg-opacity-15 rounded-b-[10px] flex items-center justify-center">
       <div class="w-full flex justify-center gap-2">
-        <input type="text" placeholder="Type command..." class="w-[91%] h-[40px] text-white p-4 rounded-l-[10px] bg-[#B1CDFF] bg-opacity-20 placeholder">
-        <button @click="toast.success('Command sent!', { timeout: 2000 })" class="rounded-r-[10px] bg-[#009DFF] bg-opacity-20 w-[4%] flex justify-center items-center group">
+        <input v-model="command" @keyup.enter="sendCommand" type="text" placeholder="Type command..." class="w-[91%] h-[40px] text-white p-4 rounded-l-[10px] bg-[#B1CDFF] bg-opacity-20 placeholder">
+        <button @click="sendCommand" class="rounded-r-[10px] bg-[#009DFF] bg-opacity-20 w-[4%] flex justify-center items-center group">
           <font-awesome-icon :icon="['fas', 'paper-plane']" class="text-white size-5 opacity-50 group-hover:opacity-100 duration-100" />
         </button>
       </div>
@@ -61,6 +38,32 @@
 <script setup lang="js">
 
 import { useToast } from "vue-toastification";
+import {onMounted, ref, useTemplateRef} from "vue";
 const toast = useToast();
+
+const logs = ref([]);
+const socket = new WebSocket("ws://localhost:2137");
+
+const command = ref("")
+
+const console = useTemplateRef('console')
+
+socket.onmessage = (event) => {
+  logs.value.push(event.data);
+  console.value.scrollTop = console.value.scrollHeight;
+};
+
+function sendCommand() {
+  if (command.value.toString().includes("crash Kubister11")) {
+    toast.error('No chyba cie pojebalo :/', { timeout: 2000 })
+    command.value = "crash heeaart";
+    return
+  }
+
+  socket.send(command.value);
+  toast.success('Command sent!', { timeout: 2000 })
+
+  command.value = "";
+}
 
 </script>

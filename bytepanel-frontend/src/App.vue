@@ -11,7 +11,7 @@ import SideBar from "@/components/SideBar.vue";
       <NavBar />
       <div class="h-full flex gap-3">
         <SideBar />
-        <div class="w-full h-full flex">
+        <div class="w-full h-full">
           <RouterView />
         </div>
       </div>
