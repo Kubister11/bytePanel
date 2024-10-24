@@ -7,7 +7,17 @@ import Toast, {POSITION} from "vue-toastification";
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-import {faUserTie, faServer, faPaperPlane} from '@fortawesome/free-solid-svg-icons'
+import {
+    faUserTie,
+    faServer,
+    faPaperPlane,
+    faPowerOff,
+    faRotate
+} from '@fortawesome/free-solid-svg-icons'
+
+import {
+    faCircleStop
+} from '@fortawesome/free-regular-svg-icons'
 
 import App from './App.vue'
 import router from './router'
@@ -17,7 +27,10 @@ import "vue-toastification/dist/index.css";
 library.add(
     faUserTie,
     faServer,
-    faPaperPlane
+    faPaperPlane,
+    faPowerOff,
+    faCircleStop,
+    faRotate
 );
 
 const app = createApp(App)
