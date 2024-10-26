@@ -33,6 +33,21 @@ body {
   background-color: rgb(197, 124, 28) !important;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+/*::-webkit-scrollbar-track {*/
+/*  border-radius: 10px;*/
+/*}*/
+/*::-webkit-scrollbar-thumb {*/
+/*  background: #5c6e9d;*/
+/*  border-radius: 10px;*/
+/*}*/
+/*::-webkit-scrollbar-thumb:hover {*/
+/*  background: #88aaff;*/
+/*}*/
+
+
 
 .bg-sphere {
   position: absolute;

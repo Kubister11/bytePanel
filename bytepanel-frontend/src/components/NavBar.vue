@@ -1,5 +1,5 @@
 <template>
-  <header class="w-full h-[56px] rounded-[10px] bg-black bg-opacity-30 drop-shadow-lg shadow-black flex">
+  <header class="w-full h-[56px] rounded-[10px] bg-black bg-opacity-20 drop-shadow-lg shadow-black flex">
     <div class="w-full flex justify-start items-center ml-5 gap-2">
       <h1 class="text-white text-[32px] bold-font">BytePanel</h1>
       <div class="flex h-full items-end">

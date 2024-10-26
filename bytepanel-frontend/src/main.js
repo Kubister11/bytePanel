@@ -12,11 +12,11 @@ import {
     faServer,
     faPaperPlane,
     faPowerOff,
-    faRotate
+    faRotate, faMicrochip, faMemory, faFloppyDisk, faClock, faTerminal, faRetweet, faGear, faUser
 } from '@fortawesome/free-solid-svg-icons'
 
 import {
-    faCircleStop
+    faCircleStop, faFile
 } from '@fortawesome/free-regular-svg-icons'
 
 import App from './App.vue'
@@ -30,7 +30,16 @@ library.add(
     faPaperPlane,
     faPowerOff,
     faCircleStop,
-    faRotate
+    faRotate,
+    faClock,
+    faMicrochip,
+    faMemory,
+    faFloppyDisk,
+    faTerminal,
+    faFile,
+    faRetweet,
+    faGear,
+    faUser
 );
 
 const app = createApp(App)

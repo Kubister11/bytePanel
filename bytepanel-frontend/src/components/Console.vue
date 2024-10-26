@@ -1,5 +1,5 @@
 <template>
-  <div class="w-4/6 h-full rounded-[10px] bg-[#161827] bg-opacity-80 flex flex-col">
+  <div class="w-[75%] h-full rounded-[10px] bg-[#161827] bg-opacity-80 flex flex-col">
     <div class="w-full h-[60px] bg-black bg-opacity-15 rounded-t-[10px] flex items-center">
       <div class="flex gap-5 ml-5 mr-5 items-center w-full">
         <font-awesome-icon :icon="['fas', 'server']" class="text-white size-6" />
@@ -38,7 +38,14 @@
 <script setup lang="js">
 
 import { useToast } from "vue-toastification";
-import {onMounted, ref, useTemplateRef} from "vue";
+import {onMounted, reactive, ref, useTemplateRef} from "vue";
+import { useRoute } from "vue-router";
+
+const state = reactive({
+  serverId: null
+})
+
+const route = useRoute();
 const toast = useToast();
 
 const logs = ref([]);
@@ -46,11 +53,15 @@ const socket = new WebSocket("ws://localhost:2137");
 
 const command = ref("")
 
-const console = useTemplateRef('console')
+const consoleView = useTemplateRef('console')
+
+onMounted(() => {
+  state.serverId = route.query.id
+})
 
 socket.onmessage = (event) => {
   logs.value.push(event.data);
-  console.value.scrollTop = console.value.scrollHeight;
+  consoleView.value.scrollTop = console.value.scrollHeight;
 };
 
 function sendCommand() {
