@@ -1,5 +1,5 @@
 <template>
-  <div class="w-[250px] h-full rounded-[10px] bg-black bg-opacity-20 drop-shadow-lg shadow-black flex flex-col items-center gap-6">
+  <div class="w-[250px] h-full rounded-[10px] bg-black bg-opacity-20 drop-shadow-lg shadow-black flex flex-col items-center gap-6" data-aos="fade-right">
     <div class="w-full h-full flex flex-col items-center gap-6">
       <div class="w-full h-fit flex justify-center items-center flex-col mt-4 gap-2">
 

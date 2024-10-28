@@ -5,48 +5,102 @@ import com.github.dockerjava.api.async.ResultCallback
 import com.github.dockerjava.api.command.AttachContainerCmd
 import com.github.dockerjava.api.command.CreateContainerResponse
 import com.github.dockerjava.api.command.PullImageResultCallback
-import com.github.dockerjava.api.model.*
+import com.github.dockerjava.api.model.ExposedPort
+import com.github.dockerjava.api.model.Frame
+import com.github.dockerjava.api.model.PortBinding
+import com.github.dockerjava.api.model.Ports
 import com.github.dockerjava.core.DefaultDockerClientConfig
 import com.github.dockerjava.core.DockerClientImpl
 import com.github.dockerjava.core.command.AttachContainerResultCallback
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
+import com.jcraft.jsch.ChannelSftp
+import com.jcraft.jsch.JSch
+import com.jcraft.jsch.Session
 import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
-import java.io.*
+import java.io.BufferedWriter
+import java.io.OutputStreamWriter
+import java.io.PipedInputStream
+import java.io.PipedOutputStream
 import java.net.InetSocketAddress
 
 
 class BytePanelWings {
     fun start() {
-        // Krok 1: Tworzymy klienta Dockera
-        val dockerClient = createDockerClient()
-
-        // Krok 2: Pobieramy obraz Javy dla kontenera Minecrafta
-        pullMinecraftServerImage(dockerClient)
-
-        // Krok 3: Tworzymy kontener
-        val container = createDockerContainer(dockerClient)
-
-        println("Copying Minecraft server JAR to container...")
-        println("Minecraft server JAR copied to container!")
-        // Krok 5: Uruchamiamy kontener
-        startContainer(dockerClient, container.id)
-
-        // Krok 6: Strumieniujemy logi konsoli po uruchomieniu serwera
-        println("Serwer Minecraft został uruchomiony w kontenerze Docker!")
-        println("Logi konsoli:")
+//        // Krok 1: Tworzymy klienta Dockera
+//        val dockerClient = createDockerClient()
 //
-        val logWebSocketServer = LogWebSocketServer(
-            2137,
-            dockerClient, container.id
-        )
-        logWebSocketServer.start()
+//        // Krok 2: Pobieramy obraz Javy dla kontenera Minecrafta
+//        pullMinecraftServerImage(dockerClient)
+//
+//        // Krok 3: Tworzymy kontener
+//        val container = createDockerContainer(dockerClient)
+//
+//        println("Copying Minecraft server JAR to container...")
+//        println("Minecraft server JAR copied to container!")
+//        // Krok 5: Uruchamiamy kontener
+//        startContainer(dockerClient, container.id)
+//
+//        // Krok 6: Strumieniujemy logi konsoli po uruchomieniu serwera
+//        println("Serwer Minecraft został uruchomiony w kontenerze Docker!")
+//        println("Logi konsoli:")
+////
+//        val logWebSocketServer = LogWebSocketServer(
+//            2137,
+//            dockerClient, container.id
+//        )
+//        logWebSocketServer.start()
+//
+//        println("Naciśnij Enter, aby zamknąć serwer...")
+//        readlnOrNull()
+//        logWebSocketServer.stop()
 
-        println("Naciśnij Enter, aby zamknąć serwer...")
-        readlnOrNull()
-        logWebSocketServer.stop()
+        getFTPFiles().forEach { file ->
+            println(file.filename + " " + file.attrs.size)
+        }
     }
+
+    val jsch = JSch()
+    val session: Session = jsch.getSession("kubister11.6f7d974f", "83.168.110.37", 2022)
+
+    init {
+        session.setPassword("Okijuhygtf2007")
+        session.setConfig("StrictHostKeyChecking", "no")
+        session.connect()
+
+        println("Connected")
+        Thread.sleep(4000)
+        println("Loading")
+    }
+
+
+    fun getFTPFiles(): List<ChannelSftp.LsEntry> {
+        val now = System.currentTimeMillis()
+
+
+        val channel = session.openChannel("sftp") as ChannelSftp
+        channel.connect()
+
+        val files = channel.ls(".")
+
+        channel.disconnect()
+        session.disconnect()
+
+        println("Time: " + (System.currentTimeMillis() - now))
+
+        return files
+    }
+
+
+
+
+
+
+
+
+
+
 
     fun createDockerClient(): DockerClient {
         val config =

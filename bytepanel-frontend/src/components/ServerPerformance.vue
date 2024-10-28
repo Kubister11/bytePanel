@@ -2,7 +2,7 @@
   <div class="w-[25%] h-full">
     <div class="flex flex-col w-full gap-5">
 
-      <div class="bg-black bg-opacity-20 flex items-center gap-5 w-full h-[100px] rounded-[10px] p-5">
+      <div class="bg-black bg-opacity-20 flex items-center gap-5 w-full h-[100px] rounded-[10px] p-5" data-aos="fade-left">
         <div class="bg-black rounded-[10px] bg-opacity-30 w-16 h-16 flex items-center justify-center">
           <font-awesome-icon :icon="['fas', 'clock']"  class="text-white size-8 opacity-70"/>
         </div>
@@ -12,7 +12,7 @@
         </div>
       </div>
 
-      <div class="bg-black bg-opacity-20 flex items-center gap-5 w-full h-[100px] rounded-[10px] p-5">
+      <div class="bg-black bg-opacity-20 flex items-center gap-5 w-full h-[100px] rounded-[10px] p-5" data-aos="fade-left">
         <div class="bg-black rounded-[10px] bg-opacity-30 w-16 h-16 flex items-center justify-center">
           <font-awesome-icon :icon="['fas', 'microchip']"  class="text-white size-8 opacity-70"/>
         </div>
@@ -22,7 +22,7 @@
         </div>
       </div>
 
-      <div class="bg-black bg-opacity-20 flex items-center gap-5 w-full h-[100px] rounded-[10px] p-5">
+      <div class="bg-black bg-opacity-20 flex items-center gap-5 w-full h-[100px] rounded-[10px] p-5" data-aos="fade-left">
         <div class="bg-black rounded-[10px] bg-opacity-30 w-16 h-16 flex items-center justify-center">
           <font-awesome-icon :icon="['fas', 'memory']"  class="text-white size-8 opacity-70"/>
         </div>
@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <div class="bg-black bg-opacity-20 flex items-center gap-5 w-full h-[100px] rounded-[10px] p-5">
+      <div class="bg-black bg-opacity-20 flex items-center gap-5 w-full h-[100px] rounded-[10px] p-5" data-aos="fade-left">
         <div class="bg-black rounded-[10px] bg-opacity-30 w-16 h-16 flex items-center justify-center">
           <font-awesome-icon :icon="['fas', 'floppy-disk']"  class="text-white size-8 opacity-70"/>
         </div>
@@ -43,9 +43,6 @@
       </div>
 
     </div>
-
-
-
 
 
   </div>

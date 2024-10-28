@@ -24,6 +24,11 @@ import router from './router'
 import './assets/main.css'
 import "vue-toastification/dist/index.css";
 
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+
+AOS.init();
+
 library.add(
     faUserTie,
     faServer,

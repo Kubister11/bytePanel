@@ -1,5 +1,5 @@
 <template>
-  <div class="w-[75%] h-full rounded-[10px] bg-[#161827] bg-opacity-80 flex flex-col">
+  <div class="w-[75%] h-full rounded-[10px] bg-[#161827] bg-opacity-80 flex flex-col" data-aos="zoom-out-up">
     <div class="w-full h-[60px] bg-black bg-opacity-15 rounded-t-[10px] flex items-center">
       <div class="flex gap-5 ml-5 mr-5 items-center w-full">
         <font-awesome-icon :icon="['fas', 'server']" class="text-white size-6" />
