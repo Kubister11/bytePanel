@@ -7,6 +7,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="bytepanel-wings" />
+        <module name="bytepanel-shared" />
+        <module name="bytepanel-web-backend" />
       </profile>
     </annotationProcessing>
   </component>

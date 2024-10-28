@@ -10,6 +10,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>bytepanel-wings</module>
+        <module>bytepanel-web-backend</module>
+        <module>bytepanel-shared</module>
     </modules>
 
     <properties>

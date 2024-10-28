@@ -1,7 +1,8 @@
 <script setup lang="js">
 
-import { reactive } from "vue";
+import {onMounted, reactive} from "vue";
 import router from "@/router/index.js";
+import fetchServers from "../fetcher/fetcher.js";
 
 const state = reactive({
   servers: [
@@ -30,6 +31,10 @@ const state = reactive({
       memoryUsageMax: 7.0
     }
   ]
+})
+
+onMounted(() => {
+  fetchServers()
 })
 
 
