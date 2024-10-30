@@ -1,3 +1,9 @@
+<script setup>
+
+console.log(defineProps(["state"]).state)
+
+</script>
+
 <template>
   <div class="w-[25%] h-full">
     <div class="flex flex-col w-full gap-5">
@@ -8,7 +14,7 @@
         </div>
         <div>
           <h1 class="text-[#ADC4FF] text-[20px] m-0 leading-tight">Uptime</h1>
-          <p class="text-[#D1DEFF] bold-font text-[25px] m-0 leading-tight">Starting...</p>
+          <p class="text-[#D1DEFF] bold-font text-[25px] m-0 leading-tight"></p>
         </div>
       </div>
 
@@ -18,7 +24,7 @@
         </div>
         <div>
           <h1 class="text-[#ADC4FF] text-[20px] m-0 leading-tight">CPU Load</h1>
-          <p class="text-[#D1DEFF] bold-font text-[25px] m-0 leading-tight">10% <span class="text-[18px] opacity-50">/ 100%</span></p>
+          <p class="text-[#D1DEFF] bold-font text-[25px] m-0 leading-tight">% <span class="text-[18px] opacity-50">/ %</span></p>
         </div>
       </div>
 
@@ -28,7 +34,7 @@
         </div>
         <div>
           <h1 class="text-[#ADC4FF] text-[20px] m-0 leading-tight">Memory Usage</h1>
-          <p class="text-[#D1DEFF] bold-font text-[25px] m-0 leading-tight">4.56GB <span class="text-[18px] opacity-50">/ 10GB</span></p>
+          <p class="text-[#D1DEFF] bold-font text-[25px] m-0 leading-tight">GB <span class="text-[18px] opacity-50">/ GB</span></p>
         </div>
       </div>
 
@@ -38,14 +44,11 @@
         </div>
         <div>
           <h1 class="text-[#ADC4FF] text-[20px] m-0 leading-tight">Disk</h1>
-          <p class="text-[#D1DEFF] bold-font text-[25px] m-0 leading-tight">30.1GB <span class="text-[18px] opacity-50">/ 100GB</span></p>
+          <p class="text-[#D1DEFF] bold-font text-[25px] m-0 leading-tight">GB <span class="text-[18px] opacity-50">/ GB</span></p>
         </div>
       </div>
 
     </div>
 
-
   </div>
 </template>
-<script setup lang="ts">
-</script>

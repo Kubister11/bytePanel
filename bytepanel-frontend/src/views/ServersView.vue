@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ServersStatistics from "@/components/ServersStatistics.vue";
-import ServerList from "@/components/ServerList.vue";
+import ServersStatistics from "@/components/list/ServersStatistics.vue";
+import ServerList from "@/components/list/ServerList.vue";
 </script>
 
 <template>

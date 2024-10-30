@@ -1,7 +1,15 @@
 <script setup>
-import Console from "@/components/Console.vue";
 import SideBar from "@/components/SideBar.vue";
-import ServerPerformance from "@/components/ServerPerformance.vue";
+import Console from "@/components/console/Console.vue";
+import ServerPerformance from "@/components/console/ServerPerformance.vue";
+import {reactive} from "vue";
+
+const state = reactive({
+  serverId: null
+})
+
+defineProps(["state"])
+
 </script>
 
 <template>

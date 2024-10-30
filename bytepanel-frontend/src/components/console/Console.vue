@@ -38,7 +38,7 @@
 <script setup lang="js">
 
 import { useToast } from "vue-toastification";
-import {onMounted, reactive, ref, useTemplateRef} from "vue";
+import { onMounted, reactive, ref, useTemplateRef } from "vue";
 import { useRoute } from "vue-router";
 
 const state = reactive({
