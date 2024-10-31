@@ -8,7 +8,9 @@ data class Server(
 
     @Expose val name: String,
     @Expose val cpuLoadMax: Double,
-    @Expose val memoryUsageMax: Double
+    @Expose val memoryUsageMax: Double,
+    @Expose val wingsId: String,
+    @Expose val containerId: String,
 ) {
     val cpuLoad: Double = 0.0
     val memoryUsage: Double = 0.0
