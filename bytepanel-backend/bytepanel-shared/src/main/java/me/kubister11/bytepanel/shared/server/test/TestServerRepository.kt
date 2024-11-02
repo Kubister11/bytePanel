@@ -12,15 +12,21 @@ class TestServerRepository : MongoRepository<String, Server> {
         Server(
             UUID.randomUUID().toString(),
             "BOXPVP_1",
-            100.0,
-            200.0,
+            100,
+            200,
+            1024 * 10,
+            UUID.randomUUID().toString(),
+            UUID.randomUUID().toString()
         ),
         Server(
             UUID.randomUUID().toString(),
             "BOXPVP_2",
-            100.0,
-            200.0,
-        )
+            100,
+            200,
+            1024 * 10,
+            UUID.randomUUID().toString(),
+            UUID.randomUUID().toString()
+        ),
     )
 
     override fun findAll(): Collection<Server> {

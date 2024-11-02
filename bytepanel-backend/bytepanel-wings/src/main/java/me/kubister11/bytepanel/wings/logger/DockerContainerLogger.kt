@@ -11,14 +11,14 @@ class DockerContainerLogger(
 ) {
 
     private val listeners: MutableList<Consumer<String>> = mutableListOf()
-    private lateinit var callback: ResultCallback.Adapter<Frame>
+    private var callback: ResultCallback.Adapter<Frame>? = null
 
     fun addListener(listener: Consumer<String>) {
         listeners.add(listener)
     }
 
     fun start() {
-        if (::callback.isInitialized) error("Logger is already started")
+        if (callback != null) error("Logger is already started")
 
         this.callback = dockerClient.logContainerCmd(containerId)
             .withStdOut(true)
@@ -28,13 +28,14 @@ class DockerContainerLogger(
                 override fun onNext(item: Frame) {
                     val logLine = String(item.payload)
                     listeners.forEach { listener -> listener.accept(logLine) }
+                    println(logLine)
                 }
             }).awaitCompletion()
     }
 
     fun close() {
-        if (!::callback.isInitialized) error("Logger is not started")
+        if (callback == null) error("Logger is not started")
 
-        callback.close()
+        callback?.close()
     }
 }

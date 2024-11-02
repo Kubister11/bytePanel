@@ -8,12 +8,49 @@ import com.github.dockerjava.api.model.Ports
 import com.github.dockerjava.core.DefaultDockerClientConfig
 import com.github.dockerjava.core.DockerClientImpl
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
+import me.kubister11.bytepanel.shared.server.test.TestServerRepository
+import me.kubister11.bytepanel.wings.container.DockerContainer
+import me.kubister11.bytepanel.wings.service.ServerService
+import org.apache.commons.lang3.RandomStringUtils
 
 
 class BytePanelWings {
     val dockerClient = createDockerClient()
 
+    lateinit var wingsId: String
+    lateinit var serverService: ServerService
+
     fun start() {
+        this.wingsId = RandomStringUtils.random(50, true, true)
+
+        this.serverService = ServerService(dockerClient, TestServerRepository(), wingsId)
+
+        val dockerServer = this.serverService.createServer(
+            "openjdk:17-jdk-slim",
+            "minecraft-server",
+            """
+            apt-get update && apt-get install -y curl && \
+            curl -o server.jar https://api.papermc.io/v2/projects/paper/versions/1.20.4/builds/497/downloads/paper-1.20.4-497.jar && \
+            echo "eula=true" > eula.txt
+        """.trimIndent(),
+            "java -jar server.jar nogui",
+            "stop",
+            listOf(25565),
+            100,
+            1024 * 3,
+            1024 * 30
+        ).join()
+
+        println("TEST")
+        println("TEST")
+        println("TEST")
+        println("TEST")
+        println("TEST")
+        println("TEST")
+        println("TEST")
+
+        dockerServer.container.start()
+
 
     }
 
