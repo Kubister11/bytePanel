@@ -1,7 +1,5 @@
 package me.kubister11.bytepanel.shared.server.test
 
-import com.google.gson.Gson
-import me.kubister11.bytepanel.shared.database.MongoDB
 import me.kubister11.bytepanel.shared.repository.MongoRepository
 import me.kubister11.bytepanel.shared.server.Server
 import java.util.*
@@ -10,23 +8,17 @@ class TestServerRepository : MongoRepository<String, Server> {
 
     val servers = mutableListOf(
         Server(
-            UUID.randomUUID().toString(),
+            "AAAAAAAAAAAAAAAABBBBBBBBBBBBBCCCCCCCCCCCDDDDDDDDDDDD",
             "BOXPVP_1",
+            "test-minecraft",
             100,
             200,
             1024 * 10,
-            UUID.randomUUID().toString(),
-            UUID.randomUUID().toString()
-        ),
-        Server(
-            UUID.randomUUID().toString(),
-            "BOXPVP_2",
-            100,
-            200,
-            1024 * 10,
-            UUID.randomUUID().toString(),
-            UUID.randomUUID().toString()
-        ),
+            "AAAAAAAAAAAAAAAABBBBBBBBBBBBBCCCCCCCCCCCDDDDDDDDDDDD",
+            "stop",
+            listOf(25565),
+            ""
+        )
     )
 
     override fun findAll(): Collection<Server> {

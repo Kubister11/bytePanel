@@ -2,7 +2,7 @@
 
 import {onMounted, reactive} from "vue";
 import router from "@/router/index.js";
-import { fetchServers } from "@/fetcher/fetcher.js";
+import { fetchServers } from "@/fetcher/backend.js";
 
 const state = reactive({
   servers: []
@@ -43,7 +43,7 @@ function routeToServerPanel(id) {
 
       <div class="h-full flex-col flex p-3 gap-3">
         <div class="h-full justify-end flex">
-          <font-awesome-icon :icon="['fas', 'server']" class="text-white size-[70px] opacity-15" />
+          <font-awesome-icon :icon="['fas', 'server']" class="text-white size-[70px] opacity-70" />
         </div>
         <div class="h-full flex items-end">
           <div class="flex gap-1.5">

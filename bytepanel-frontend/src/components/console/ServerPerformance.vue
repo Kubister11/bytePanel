@@ -1,7 +1,5 @@
 <script setup>
 
-console.log(defineProps(["state"]).state)
-
 </script>
 
 <template>

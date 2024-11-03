@@ -1,57 +1,129 @@
 package me.kubister11.bytepanel.wings
 
 import com.github.dockerjava.api.DockerClient
-import com.github.dockerjava.api.command.CreateContainerResponse
-import com.github.dockerjava.api.model.ExposedPort
-import com.github.dockerjava.api.model.PortBinding
-import com.github.dockerjava.api.model.Ports
 import com.github.dockerjava.core.DefaultDockerClientConfig
 import com.github.dockerjava.core.DockerClientImpl
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
-import me.kubister11.bytepanel.shared.server.test.TestServerRepository
-import me.kubister11.bytepanel.wings.container.DockerContainer
-import me.kubister11.bytepanel.wings.service.ServerService
-import org.apache.commons.lang3.RandomStringUtils
+import com.google.gson.GsonBuilder
+import com.mongodb.ConnectionString
+import com.mongodb.MongoClientSettings
+import me.kubister11.bytepanel.shared.Wings
+import me.kubister11.bytepanel.shared.database.MongoDB
+import me.kubister11.bytepanel.shared.database.RedisAPI
+import me.kubister11.bytepanel.shared.image.DockerImage
+import me.kubister11.bytepanel.shared.image.ImageRepository
+import me.kubister11.bytepanel.shared.packets.CreateServerPacket
+import me.kubister11.bytepanel.shared.packets.ServerPowerActionPacket
+import me.kubister11.bytepanel.shared.repository.MongoRepository
+import me.kubister11.bytepanel.shared.server.Server
+import me.kubister11.bytepanel.shared.server.ServerRepository
+import me.kubister11.bytepanel.wings.listener.ServerCreatePacketListener
+import me.kubister11.bytepanel.wings.listener.ServerPowerActionListener
+import me.kubister11.bytepanel.wings.repository.DockerContainerLocalRepository
+import me.kubister11.bytepanel.wings.service.DockerImageService
+import me.kubister11.bytepanel.wings.factory.DockerContainerFactory
 
 
 class BytePanelWings {
-    val dockerClient = createDockerClient()
+    private val gson = GsonBuilder()
+        .setPrettyPrinting()
+        .create()
 
-    lateinit var wingsId: String
-    lateinit var serverService: ServerService
+    private val exposeGson = GsonBuilder()
+        .setPrettyPrinting()
+        .excludeFieldsWithoutExposeAnnotation()
+        .create()
+
+    private val dockerClient = createDockerClient()
+
+    private lateinit var redis: RedisAPI
+    private lateinit var mongoDB: MongoDB
+
+    private lateinit var wingsId: String
+    private lateinit var dockerContainerFactory: DockerContainerFactory
+    private lateinit var imageService: DockerImageService
+    private lateinit var dockerContainerLocalRepository: DockerContainerLocalRepository
+
+    private lateinit var serverRepository: MongoRepository<String, Server>
+    private lateinit var imageRepository: MongoRepository<String, DockerImage>
 
     fun start() {
-        this.wingsId = RandomStringUtils.random(50, true, true)
+        this.wingsId = "MIZCIgZy3UnvV4Yo2TP3pLAmvKU7Kd5nLjLfgb4bJJv6DCoODG"
+        println("Wings ID: $wingsId")
 
-        this.serverService = ServerService(dockerClient, TestServerRepository(), wingsId)
+        this.redis = RedisAPI(
+            "83.168.108.123",
+            20014,
+            "@Py8i@iV4H96"
+        )
+        this.redis.connect()
 
-        val dockerServer = this.serverService.createServer(
-            "openjdk:17-jdk-slim",
-            "minecraft-server",
-            """
-            apt-get update && apt-get install -y curl && \
-            curl -o server.jar https://api.papermc.io/v2/projects/paper/versions/1.20.4/builds/497/downloads/paper-1.20.4-497.jar && \
-            echo "eula=true" > eula.txt
-        """.trimIndent(),
-            "java -jar server.jar nogui",
-            "stop",
-            listOf(25565),
-            100,
-            1024 * 3,
-            1024 * 30
-        ).join()
+        val settings = MongoClientSettings.builder()
+            .applyConnectionString(ConnectionString("mongodb://admin:i9P65H5K8mIDkUPL@83.168.108.123:20015/"))
+            .build()
 
-        println("TEST")
-        println("TEST")
-        println("TEST")
-        println("TEST")
-        println("TEST")
-        println("TEST")
-        println("TEST")
+        this.mongoDB = MongoDB(settings, "bytePanel-TEST")
+        this.mongoDB.connect()
 
-        dockerServer.container.start()
+        this.serverRepository = ServerRepository(
+            this.mongoDB,
+            this.exposeGson
+        )
+        this.imageRepository = ImageRepository(
+            this.mongoDB,
+            this.gson
+        )
+
+        this.imageService = DockerImageService(this.dockerClient)
+
+        this.dockerContainerLocalRepository = DockerContainerLocalRepository(this.imageService)
+
+        this.dockerContainerFactory = DockerContainerFactory(
+            this.dockerClient,
+            this.serverRepository,
+            this.dockerContainerLocalRepository,
+            this.redis
+        )
+
+        this.serverRepository.findAll().forEach {
+            if (it.wingsId != this.wingsId) return@forEach
+
+            println("Server with id ${it.id} has been loaded! (containerId: ${it.containerId})")
+            this.dockerContainerFactory.createContainer(
+                it,
+                this.imageRepository.findById(it.dockerImage)!!,
+                false
+            ).join()
+        }
+
+        this.redis.registerTopic(Wings.CONSOLE_TOPIC)
+        this.redis.registerTopic(Wings.POWER_ACTIONS_TOPIC)
+        this.redis.registerTopic(Wings.CONTAINER_STATE_TOPIC)
+        this.redis.registerTopic(Wings.SERVER_CREATE_TOPIC)
+
+        this.redis.registerTopicListener(
+            Wings.POWER_ACTIONS_TOPIC,
+            ServerPowerActionPacket::class.java,
+            ServerPowerActionListener(
+                this.serverRepository,
+                this.wingsId,
+                this.dockerContainerLocalRepository,
+                this.redis
+            )
+        )
+
+        this.redis.registerTopicListener(
+            Wings.SERVER_CREATE_TOPIC,
+            CreateServerPacket::class.java,
+            ServerCreatePacketListener(
+                this.imageRepository,
+                this.dockerContainerFactory,
+                this.wingsId
+            )
+        )
 
 
+        println("BytePanel Wings started!")
     }
 
     private fun createDockerClient(): DockerClient {
@@ -62,25 +134,6 @@ class BytePanelWings {
         return DockerClientImpl.getInstance(
             config, dockerHost
         )
-    }
-
-
-    fun createDockerContainer(dockerClient: DockerClient): CreateContainerResponse {
-        return dockerClient.createContainerCmd("openjdk:17-jdk-slim")
-            .withStdinOpen(true)
-            .withTty(false)
-            .withName("minecraft-server")
-            .withCmd("sh", "-c", """
-            apt-get update && apt-get install -y curl && \
-            curl -o server.jar https://api.papermc.io/v2/projects/paper/versions/1.20.4/builds/497/downloads/paper-1.20.4-497.jar && \
-            echo "eula=true" > eula.txt && \
-            touch server-console-input && \
-            java -Xmx1024M -Xms1024M -jar server.jar nogui
-        """.trimIndent())
-            .withEnv("EULA=TRUE")
-            .withExposedPorts(ExposedPort.tcp(25565))
-            .withPortBindings(PortBinding(Ports.Binding.bindPort(25565), ExposedPort.tcp(25565)))
-            .exec()
     }
 
 }

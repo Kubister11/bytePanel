@@ -16,19 +16,29 @@ class ServerListController(
 ) : Route {
 
     override fun handle(request: Request, response: Response): Any {
-        if (request.requestMethod() == "PUT") {
-            val server = gson.fromJson(request.body(), Server::class.java)
-            if (serverRepository.findById(server.id) != null) {
-                response.status(400)
-                return JsonObject().apply {
-                    addProperty("message", "Server with this ID already exists!")
+        try {
+            if (request.requestMethod() == "PUT") {
+                val server = gson.fromJson(request.body(), Server::class.java)
+                if (serverRepository.findById(server.id) != null) {
+                    response.status(400)
+                    return JsonObject().apply {
+                        addProperty("message", "Server with this ID already exists!")
+                    }
                 }
+
+                serverRepository.insert(server)
             }
 
-            serverRepository.insert(server)
-        }
+            val servers = serverRepository.findAll()
 
-        response.status(200)
-        return gson.toJson(serverRepository.findAll())
+            response.status(200)
+            return gson.toJson(servers)
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            response.status(500)
+            return JsonObject().apply {
+                addProperty("message", "An error occurred while processing the request!")
+            }
+        }
     }
 }

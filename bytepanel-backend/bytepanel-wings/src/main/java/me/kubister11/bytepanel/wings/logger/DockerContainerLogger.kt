@@ -28,7 +28,6 @@ class DockerContainerLogger(
                 override fun onNext(item: Frame) {
                     val logLine = String(item.payload)
                     listeners.forEach { listener -> listener.accept(logLine) }
-                    println(logLine)
                 }
             }).awaitCompletion()
     }
