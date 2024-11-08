@@ -43,6 +43,8 @@ class TPCProxy(
         try {
             val remoteSocket = Socket(endpoint, endpointPort)
 
+            sendProxyHeader(clientSocket, remoteSocket)
+
             val clientToServer = Thread {
                 try {
                     clientSocket.getInputStream().copyTo(remoteSocket.getOutputStream())
@@ -73,6 +75,23 @@ class TPCProxy(
             } catch (e: IOException) {
                 e.printStackTrace()
             }
+        }
+    }
+
+    private fun sendProxyHeader(clientSocket: Socket, remoteSocket: Socket) {
+        try {
+            val clientIp = clientSocket.inetAddress.hostAddress
+            val clientPort = clientSocket.port
+            val remoteIp = remoteSocket.inetAddress.hostAddress
+            val remotePort = remoteSocket.port
+
+            val proxyHeader = "PROXY TCP4 $clientIp $remoteIp $clientPort $remotePort\r\n"
+            remoteSocket.getOutputStream().write(proxyHeader.toByteArray())
+            remoteSocket.getOutputStream().flush()
+
+            println("Wysłano nagłówek PROXY Protocol: $proxyHeader")
+        } catch (e: IOException) {
+            println("Błąd wysyłania nagłówka PROXY Protocol: ${e.message}")
         }
     }
 
