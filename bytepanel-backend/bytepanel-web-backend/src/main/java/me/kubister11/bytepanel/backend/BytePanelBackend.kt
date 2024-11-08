@@ -11,14 +11,11 @@ import me.kubister11.bytepanel.shared.database.MongoDB
 import me.kubister11.bytepanel.shared.database.RedisAPI
 import me.kubister11.bytepanel.shared.image.DockerImage
 import me.kubister11.bytepanel.shared.image.ImageRepository
-import me.kubister11.bytepanel.shared.packets.CreateServerPacket
 import me.kubister11.bytepanel.shared.repository.MongoRepository
 import me.kubister11.bytepanel.shared.server.Server
 import me.kubister11.bytepanel.shared.server.ServerRepository
-import me.kubister11.bytepanel.shared.server.test.TestServerRepository
 import spark.Filter
 import spark.Spark.*
-import java.util.*
 
 class BytePanelBackend {
 
