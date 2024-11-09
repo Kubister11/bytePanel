@@ -1,17 +1,17 @@
 package me.kubister11.bytepanel.wings.listener
 
-import me.kubister11.bytepanel.shared.Wings
+import me.kubister11.bytepanel.shared.Shared
 import me.kubister11.bytepanel.shared.database.RedisAPI
 import me.kubister11.bytepanel.shared.packets.ContainerStatePacket
 import me.kubister11.bytepanel.shared.packets.ServerPowerActionPacket
 import me.kubister11.bytepanel.shared.repository.MongoRepository
-import me.kubister11.bytepanel.shared.server.Server
+import me.kubister11.bytepanel.shared.server.ServerEntity
 import me.kubister11.bytepanel.shared.server.ServerState
 import me.kubister11.bytepanel.wings.repository.DockerContainerLocalRepository
 import org.redisson.api.listener.MessageListener
 
 class ServerPowerActionListener(
-    private val serverRepository: MongoRepository<String, Server>,
+    private val serverRepository: MongoRepository<String, ServerEntity>,
     private val wingsId: String,
     private val containerRepository: DockerContainerLocalRepository,
     private val redis: RedisAPI
@@ -37,7 +37,7 @@ class ServerPowerActionListener(
         when (packet.type) {
             ServerPowerActionPacket.Type.ON -> {
                 this.redis.publishAsync(
-                    Wings.CONTAINER_STATE_TOPIC,
+                    Shared.CONTAINER_STATE_TOPIC,
                     ContainerStatePacket(
                         server.id,
                         ServerState.STARTING
@@ -49,7 +49,7 @@ class ServerPowerActionListener(
             }
             ServerPowerActionPacket.Type.OFF -> {
                 this.redis.publishAsync(
-                    Wings.CONTAINER_STATE_TOPIC,
+                    Shared.CONTAINER_STATE_TOPIC,
                     ContainerStatePacket(
                         server.id,
                         ServerState.STOPPING

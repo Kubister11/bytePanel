@@ -7,7 +7,7 @@ import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
 import com.google.gson.GsonBuilder
 import com.mongodb.ConnectionString
 import com.mongodb.MongoClientSettings
-import me.kubister11.bytepanel.shared.Wings
+import me.kubister11.bytepanel.shared.Shared
 import me.kubister11.bytepanel.shared.database.MongoDB
 import me.kubister11.bytepanel.shared.database.RedisAPI
 import me.kubister11.bytepanel.shared.image.DockerImage
@@ -15,7 +15,7 @@ import me.kubister11.bytepanel.shared.image.ImageRepository
 import me.kubister11.bytepanel.shared.packets.CreateServerPacket
 import me.kubister11.bytepanel.shared.packets.ServerPowerActionPacket
 import me.kubister11.bytepanel.shared.repository.MongoRepository
-import me.kubister11.bytepanel.shared.server.Server
+import me.kubister11.bytepanel.shared.server.ServerEntity
 import me.kubister11.bytepanel.shared.server.ServerRepository
 import me.kubister11.bytepanel.wings.listener.ServerCreatePacketListener
 import me.kubister11.bytepanel.wings.listener.ServerPowerActionListener
@@ -44,7 +44,7 @@ class BytePanelWings {
     private lateinit var imageService: DockerImageService
     private lateinit var dockerContainerLocalRepository: DockerContainerLocalRepository
 
-    private lateinit var serverRepository: MongoRepository<String, Server>
+    private lateinit var serverRepository: MongoRepository<String, ServerEntity>
     private lateinit var imageRepository: MongoRepository<String, DockerImage>
 
     fun start() {
@@ -96,13 +96,13 @@ class BytePanelWings {
             ).join()
         }
 
-        this.redis.registerTopic(Wings.CONSOLE_TOPIC)
-        this.redis.registerTopic(Wings.POWER_ACTIONS_TOPIC)
-        this.redis.registerTopic(Wings.CONTAINER_STATE_TOPIC)
-        this.redis.registerTopic(Wings.SERVER_CREATE_TOPIC)
+        this.redis.registerTopic(Shared.CONSOLE_TOPIC)
+        this.redis.registerTopic(Shared.POWER_ACTIONS_TOPIC)
+        this.redis.registerTopic(Shared.CONTAINER_STATE_TOPIC)
+        this.redis.registerTopic(Shared.SERVER_CREATE_TOPIC)
 
         this.redis.registerTopicListener(
-            Wings.POWER_ACTIONS_TOPIC,
+            Shared.POWER_ACTIONS_TOPIC,
             ServerPowerActionPacket::class.java,
             ServerPowerActionListener(
                 this.serverRepository,
@@ -113,7 +113,7 @@ class BytePanelWings {
         )
 
         this.redis.registerTopicListener(
-            Wings.SERVER_CREATE_TOPIC,
+            Shared.SERVER_CREATE_TOPIC,
             CreateServerPacket::class.java,
             ServerCreatePacketListener(
                 this.imageRepository,

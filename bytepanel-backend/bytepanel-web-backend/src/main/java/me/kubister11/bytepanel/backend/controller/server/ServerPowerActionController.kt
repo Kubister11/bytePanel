@@ -2,18 +2,18 @@ package me.kubister11.bytepanel.backend.controller.server
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import me.kubister11.bytepanel.shared.Wings
+import me.kubister11.bytepanel.shared.Shared
 import me.kubister11.bytepanel.shared.database.RedisAPI
 import me.kubister11.bytepanel.shared.packets.ServerPowerActionPacket
 import me.kubister11.bytepanel.shared.repository.MongoRepository
-import me.kubister11.bytepanel.shared.server.Server
+import me.kubister11.bytepanel.shared.server.ServerEntity
 import spark.Request
 import spark.Response
 import spark.Route
 
 class ServerPowerActionController(
     private val gson: Gson,
-    private val serverRepository: MongoRepository<String, Server>,
+    private val serverRepository: MongoRepository<String, ServerEntity>,
     private val redis: RedisAPI
 ) : Route {
 
@@ -51,7 +51,7 @@ class ServerPowerActionController(
 
 
             this.redis.publishAsync(
-                Wings.POWER_ACTIONS_TOPIC,
+                Shared.POWER_ACTIONS_TOPIC,
                 ServerPowerActionPacket(
                     server.id,
                     action

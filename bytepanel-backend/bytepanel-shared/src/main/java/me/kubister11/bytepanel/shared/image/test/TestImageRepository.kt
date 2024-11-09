@@ -2,8 +2,6 @@ package me.kubister11.bytepanel.shared.image.test
 
 import me.kubister11.bytepanel.shared.image.DockerImage
 import me.kubister11.bytepanel.shared.repository.MongoRepository
-import me.kubister11.bytepanel.shared.server.Server
-import java.util.*
 
 class TestImageRepository : MongoRepository<String, DockerImage> {
 

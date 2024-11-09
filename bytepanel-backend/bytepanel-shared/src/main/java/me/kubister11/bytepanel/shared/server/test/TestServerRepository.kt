@@ -1,13 +1,12 @@
 package me.kubister11.bytepanel.shared.server.test
 
 import me.kubister11.bytepanel.shared.repository.MongoRepository
-import me.kubister11.bytepanel.shared.server.Server
-import java.util.*
+import me.kubister11.bytepanel.shared.server.ServerEntity
 
-class TestServerRepository : MongoRepository<String, Server> {
+class TestServerRepository : MongoRepository<String, ServerEntity> {
 
     val servers = mutableListOf(
-        Server(
+        ServerEntity(
             "AAAAAAAAAAAAAAAABBBBBBBBBBBBBCCCCCCCCCCCDDDDDDDDDDDD",
             "BOXPVP_1",
             "test-minecraft",
@@ -21,7 +20,7 @@ class TestServerRepository : MongoRepository<String, Server> {
         )
     )
 
-    override fun findAll(): Collection<Server> {
+    override fun findAll(): Collection<ServerEntity> {
         return servers
     }
 
@@ -29,16 +28,16 @@ class TestServerRepository : MongoRepository<String, Server> {
         servers.removeAll { it.id == id }
     }
 
-    override fun update(id: String, value: Server) {
+    override fun update(id: String, value: ServerEntity) {
         servers.removeAll { it.id == id }
         servers.add(value)
     }
 
-    override fun insert(value: Server) {
+    override fun insert(value: ServerEntity) {
         servers.add(value)
     }
 
-    override fun findById(id: String): Server? {
+    override fun findById(id: String): ServerEntity? {
         return servers.firstOrNull { it.id == id }
     }
 }

@@ -3,7 +3,7 @@ package me.kubister11.bytepanel.shared.server
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class Server(
+data class ServerEntity(
     @Expose @SerializedName("_id") val id: String,
 
     @Expose val name: String,

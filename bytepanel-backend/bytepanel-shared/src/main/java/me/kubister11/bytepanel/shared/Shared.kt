@@ -1,6 +1,6 @@
 package me.kubister11.bytepanel.shared
 
-object Wings {
+object Shared {
     const val POWER_ACTIONS_TOPIC = "wings::power-actions"
     const val CONSOLE_TOPIC = "wings::console"
     const val CONTAINER_STATE_TOPIC = "wings::container-state"

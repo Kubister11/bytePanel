@@ -6,13 +6,13 @@ import com.mongodb.MongoClientSettings
 import me.kubister11.bytepanel.backend.controller.server.ServerInfoController
 import me.kubister11.bytepanel.backend.controller.server.ServerListController
 import me.kubister11.bytepanel.backend.controller.server.ServerPowerActionController
-import me.kubister11.bytepanel.shared.Wings
+import me.kubister11.bytepanel.shared.Shared
 import me.kubister11.bytepanel.shared.database.MongoDB
 import me.kubister11.bytepanel.shared.database.RedisAPI
 import me.kubister11.bytepanel.shared.image.DockerImage
 import me.kubister11.bytepanel.shared.image.ImageRepository
 import me.kubister11.bytepanel.shared.repository.MongoRepository
-import me.kubister11.bytepanel.shared.server.Server
+import me.kubister11.bytepanel.shared.server.ServerEntity
 import me.kubister11.bytepanel.shared.server.ServerRepository
 import spark.Filter
 import spark.Spark.*
@@ -32,7 +32,7 @@ class BytePanelBackend {
         .excludeFieldsWithoutExposeAnnotation()
         .create()
 
-    private lateinit var serverRepository: MongoRepository<String, Server>
+    private lateinit var serverRepository: MongoRepository<String, ServerEntity>
     private lateinit var imagesRepository: MongoRepository<String, DockerImage>
 
     private lateinit var serverListController: ServerListController
@@ -62,10 +62,10 @@ class BytePanelBackend {
             this.gson
         )
 
-        this.redis.registerTopic(Wings.CONSOLE_TOPIC)
-        this.redis.registerTopic(Wings.POWER_ACTIONS_TOPIC)
-        this.redis.registerTopic(Wings.CONTAINER_STATE_TOPIC)
-        this.redis.registerTopic(Wings.SERVER_CREATE_TOPIC)
+        this.redis.registerTopic(Shared.CONSOLE_TOPIC)
+        this.redis.registerTopic(Shared.POWER_ACTIONS_TOPIC)
+        this.redis.registerTopic(Shared.CONTAINER_STATE_TOPIC)
+        this.redis.registerTopic(Shared.SERVER_CREATE_TOPIC)
 
 
         port(5631)
@@ -81,13 +81,13 @@ class BytePanelBackend {
             "OK"
         }
 
-        this.serverListController = ServerListController(gson, serverRepository)
+        this.serverListController = ServerListController(this.gson, this.serverRepository, this.redis)
 
-        get("/api/server", ServerInfoController(gson, serverRepository))
+        get("/api/server", ServerInfoController(this.gson, this.serverRepository))
 
         get("/api/servers", this.serverListController)
         put("/api/servers", this.serverListController)
 
-        post("/api/server/power", ServerPowerActionController(gson, serverRepository, redis))
+        post("/api/server/power", ServerPowerActionController(this.gson, this.serverRepository, this.redis))
     }
 }
