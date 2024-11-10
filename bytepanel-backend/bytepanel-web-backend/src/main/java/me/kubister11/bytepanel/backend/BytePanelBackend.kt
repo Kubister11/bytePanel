@@ -6,14 +6,17 @@ import com.mongodb.MongoClientSettings
 import me.kubister11.bytepanel.backend.controller.server.ServerInfoController
 import me.kubister11.bytepanel.backend.controller.server.ServerListController
 import me.kubister11.bytepanel.backend.controller.server.ServerPowerActionController
+import me.kubister11.bytepanel.backend.listener.ServerConsolePacketListener
 import me.kubister11.bytepanel.shared.Shared
 import me.kubister11.bytepanel.shared.database.MongoDB
 import me.kubister11.bytepanel.shared.database.RedisAPI
 import me.kubister11.bytepanel.shared.image.DockerImage
 import me.kubister11.bytepanel.shared.image.ImageRepository
+import me.kubister11.bytepanel.shared.packets.ConsoleLogPacket
 import me.kubister11.bytepanel.shared.repository.MongoRepository
 import me.kubister11.bytepanel.shared.server.ServerEntity
 import me.kubister11.bytepanel.shared.server.ServerRepository
+import me.kubister11.bytepanel.shared.socket.ConsoleWebSocketServer
 import spark.Filter
 import spark.Spark.*
 
@@ -27,10 +30,7 @@ class BytePanelBackend {
         .setPrettyPrinting()
         .create()
 
-    private val exposeGson = GsonBuilder()
-        .setPrettyPrinting()
-        .excludeFieldsWithoutExposeAnnotation()
-        .create()
+    private lateinit var webSocketServer: ConsoleWebSocketServer
 
     private lateinit var serverRepository: MongoRepository<String, ServerEntity>
     private lateinit var imagesRepository: MongoRepository<String, DockerImage>
@@ -62,10 +62,22 @@ class BytePanelBackend {
             this.gson
         )
 
+        this.webSocketServer = ConsoleWebSocketServer(5544, this.redis, this.serverRepository)
+        this.webSocketServer.start()
+
         this.redis.registerTopic(Shared.CONSOLE_TOPIC)
         this.redis.registerTopic(Shared.POWER_ACTIONS_TOPIC)
         this.redis.registerTopic(Shared.CONTAINER_STATE_TOPIC)
         this.redis.registerTopic(Shared.SERVER_CREATE_TOPIC)
+        this.redis.registerTopic(Shared.SEND_COMMAND_TOPIC)
+
+        this.redis.registerTopicListener(
+            Shared.CONSOLE_TOPIC,
+            ConsoleLogPacket::class.java,
+            ServerConsolePacketListener(
+                this.webSocketServer
+            )
+        )
 
 
         port(5631)

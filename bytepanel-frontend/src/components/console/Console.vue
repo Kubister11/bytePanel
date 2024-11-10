@@ -49,7 +49,7 @@ const route = useRoute();
 const toast = useToast();
 
 const logs = ref([]);
-const socket = new WebSocket("ws://localhost:2137");
+const socket = new WebSocket("ws://localhost:5544");
 
 const command = ref("")
 
@@ -59,9 +59,15 @@ onMounted(() => {
   state.serverId = route.query.id
 })
 
+socket.onopen = () => {
+  socket.send(state.serverId)
+  console.log("Socket ready!")
+}
+
 socket.onmessage = (event) => {
+  console.log(event.data)
   logs.value.push(event.data);
-  consoleView.value.scrollTop = console.value.scrollHeight;
+  consoleView.value.scrollTop = consoleView.value.scrollHeight;
 };
 
 function sendCommand() {

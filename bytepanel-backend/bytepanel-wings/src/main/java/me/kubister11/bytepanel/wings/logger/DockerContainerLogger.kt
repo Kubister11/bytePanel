@@ -18,7 +18,7 @@ class DockerContainerLogger(
     }
 
     fun start() {
-        if (callback != null) error("Logger is already started")
+        if (callback != null) return
 
         this.callback = dockerClient.logContainerCmd(containerId)
             .withStdOut(true)
@@ -33,8 +33,9 @@ class DockerContainerLogger(
     }
 
     fun close() {
-        if (callback == null) error("Logger is not started")
+        if (callback == null) return
 
         callback?.close()
+        callback = null
     }
 }

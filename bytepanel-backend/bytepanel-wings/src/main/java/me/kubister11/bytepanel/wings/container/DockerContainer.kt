@@ -71,6 +71,7 @@ class DockerContainer(
 
     fun stop() {
         this.executeCommand(stopCommand)
+        this.logger.close()
     }
 
     fun kill() {
@@ -80,7 +81,7 @@ class DockerContainer(
     }
 
 
-    private fun executeCommand(command: String) {
+    fun executeCommand(command: String) {
         try {
             val out = PipedOutputStream()
             val `in` = PipedInputStream(out)

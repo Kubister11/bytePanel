@@ -12,6 +12,7 @@ import me.kubister11.bytepanel.shared.database.MongoDB
 import me.kubister11.bytepanel.shared.database.RedisAPI
 import me.kubister11.bytepanel.shared.image.DockerImage
 import me.kubister11.bytepanel.shared.image.ImageRepository
+import me.kubister11.bytepanel.shared.packets.ConsoleCommandPacket
 import me.kubister11.bytepanel.shared.packets.CreateServerPacket
 import me.kubister11.bytepanel.shared.packets.ServerPowerActionPacket
 import me.kubister11.bytepanel.shared.repository.MongoRepository
@@ -22,6 +23,7 @@ import me.kubister11.bytepanel.wings.listener.ServerPowerActionListener
 import me.kubister11.bytepanel.wings.repository.DockerContainerLocalRepository
 import me.kubister11.bytepanel.wings.service.DockerImageService
 import me.kubister11.bytepanel.wings.factory.DockerContainerFactory
+import me.kubister11.bytepanel.wings.listener.ServerCommandPacketListener
 
 
 class BytePanelWings {
@@ -100,6 +102,7 @@ class BytePanelWings {
         this.redis.registerTopic(Shared.POWER_ACTIONS_TOPIC)
         this.redis.registerTopic(Shared.CONTAINER_STATE_TOPIC)
         this.redis.registerTopic(Shared.SERVER_CREATE_TOPIC)
+        this.redis.registerTopic(Shared.SEND_COMMAND_TOPIC)
 
         this.redis.registerTopicListener(
             Shared.POWER_ACTIONS_TOPIC,
@@ -119,6 +122,16 @@ class BytePanelWings {
                 this.imageRepository,
                 this.dockerContainerFactory,
                 this.wingsId
+            )
+        )
+
+        this.redis.registerTopicListener(
+            Shared.SEND_COMMAND_TOPIC,
+            ConsoleCommandPacket::class.java,
+            ServerCommandPacketListener(
+                this.serverRepository,
+                this.wingsId,
+                this.dockerContainerLocalRepository
             )
         )
 
